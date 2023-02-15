@@ -12,8 +12,7 @@ class MainController extends Controller
     public function home()
     {
         $genres = Genre::all();
-        $movies = Movie::all();
-        return view('pages.home', compact('genres', 'movies'));
+        return view('pages.home', compact('genres'));
     }
 
     public function movieDelete(Movie $movie)
@@ -36,19 +35,49 @@ class MainController extends Controller
             'name' => 'required|string|max:64',
             'year' => 'required|digits:4|integer|min:1900|max:' . (date('Y') + 1),
             'cash_out' => 'integer|min:0|max:2147483647',
-            'genres_id' => 'required|integer',
+            'genre_id' => 'required|integer',
             'tags' => 'required|array'
         ]);
 
         $movie = Movie::make($data);
 
-        $genre = Genre::find($data['genres_id']);
-        $movie->genres()->associate($genre);
+        $genre = Genre::find($data['genre_id']);
+        $movie->genre()->associate($genre);
         $movie->save();
 
         $tags = Tag::find($data['tags']);
         $movie->tags()->attach($tags);
 
         return redirect()->route('home');
+    }
+
+    public function movieEdit(Movie $movie)
+    {
+        $genres = Genre::all();
+        $tags = Tag::all();
+        return view('pages.edit', compact('movie', 'genres', 'tags'));
+    }
+
+    public function movieUpdate(Request $request, Movie $movie)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:64',
+            'year' => 'required|digits:4|integer|min:1900|max:' . (date('Y') + 1),
+            'cash_out' => 'integer|min:0|max:2147483647',
+            'genre_id' => 'required|integer',
+            'tags' => 'required|array'
+        ]);
+
+        $movie->update($data);
+        $genre = Genre::find($data['genre_id']);
+
+        $movie->genre()->associate($genre);
+        $movie->save();
+
+        $tags = Tag::find($data['tags']);
+        $movie->tags()->sync($tags);
+
+        return redirect()->route('home');
+
     }
 }

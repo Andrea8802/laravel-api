@@ -12,7 +12,7 @@
         <label for="cash_out">CashOut</label>
         <input type="number" name="cash_out">
         <br>
-        <select name="genres_id">
+        <select name="genre_id">
             @foreach ($genres as $genre)
                 <option value="{{ $genre->id }}">
                     {{ $genre->name }}

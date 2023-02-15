@@ -19,7 +19,7 @@ class MovieSeeder extends Seeder
     {
         Movie::factory()->count(100)->make()->each(function ($movie) {
             $genre = Genre::inRandomOrder()->first();
-            $movie->genres()->associate($genre);
+            $movie->genre()->associate($genre);
 
             $movie->save();
 

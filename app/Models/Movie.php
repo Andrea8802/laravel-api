@@ -16,7 +16,7 @@ class Movie extends Model
         'cash_out'
     ];
 
-    public function genres()
+    public function genre()
     {
         return $this->BelongsTo(Genre::class);
     }
