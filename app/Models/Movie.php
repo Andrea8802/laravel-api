@@ -13,7 +13,7 @@ class Movie extends Model
     protected $fillable = [
         'name',
         'year',
-        'cashOut'
+        'cash_out'
     ];
 
     public function genres()

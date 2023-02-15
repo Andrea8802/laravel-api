@@ -14,9 +14,9 @@ return new class extends Migration {
     {
         Schema::create('movies', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 32);
-            $table->year('year');
-            $table->integer('cashOut')->nullable()->unsigned();
+            $table->string('name', 64);
+            $table->string('year', 4);
+            $table->integer('cash_out')->nullable()->unsigned();
             $table->timestamps();
         });
     }

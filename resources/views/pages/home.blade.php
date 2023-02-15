@@ -1,6 +1,7 @@
 @extends('layouts.main-layout')
 
 @section('content')
+    <a href="{{ route('movie.create') }}">Create Movie</a>
     @foreach ($genres as $genre)
         <h2>
             {{ $genre->name }}
@@ -14,7 +15,7 @@
             <a href="{{ route('movie.delete', $movie) }}">X</a>
             <b>Movie: </b>{{ $movie->name }} ({{ $movie->year }})
             <br>
-            <b>CashOut: </b> {{ $movie->cashOut }}&euro;
+            <b>CashOut: </b> {{ $movie->cash_out }}&euro;
             <br>
             <br>
         @endforeach
