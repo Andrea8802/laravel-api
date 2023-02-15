@@ -14,4 +14,11 @@ class MainController extends Controller
         $movies = Movie::all();
         return view('pages.home', compact('genres', 'movies'));
     }
+
+    public function movieDelete(Movie $movie)
+    {
+        $movie->tags()->sync([]);
+        $movie->delete();
+        return redirect()->route('home');
+    }
 }
