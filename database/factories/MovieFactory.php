@@ -18,7 +18,7 @@ class MovieFactory extends Factory
     {
         return [
             // 'name' => fake()->words(rand(1, 3), true),
-            'name' => fake()->words(rand(2), true),
+            'name' => fake()->words(2, true),
             'year' => fake()->year(),
             'cashOut' => fake()->numberBetween(1000000, 2000000000)
         ];
