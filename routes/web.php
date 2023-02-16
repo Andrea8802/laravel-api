@@ -13,3 +13,8 @@ Route::post('/movie/store', [MainController::class, 'movieStore'])->name('movie.
 
 Route::get('/movie/edit/{movie}', [MainController::class, 'movieEdit'])->name('movie.edit');
 Route::post('/movie/update/{movie}', [MainController::class, 'movieUpdate'])->name('movie.update');
+
+
+use App\Http\Controllers\ApiController;
+
+Route::get('/api/v1/movie/all', [ApiController::class, 'index']);
