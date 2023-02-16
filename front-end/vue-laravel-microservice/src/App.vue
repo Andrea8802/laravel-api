@@ -24,8 +24,7 @@ export default {
   <div v-for="movie in this.movies">
     <b>Name: </b> {{ movie.name }} ({{ movie.year }})
     <br>
-    <b>Cash Out: </b> {{ movie.cash_out }}
-    <br>
+    <b>Cash Out: </b> {{ movie.cash_out }} €
     <hr>
 </div>
 </template>
