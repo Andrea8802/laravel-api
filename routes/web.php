@@ -15,8 +15,3 @@ Route::get('/movie/edit/{movie}', [MainController::class, 'movieEdit'])->name('m
 Route::post('/movie/update/{movie}', [MainController::class, 'movieUpdate'])->name('movie.update');
 
 
-use App\Http\Controllers\ApiController;
-
-Route::get('/api/v1/movie/all', [ApiController::class, 'index']);
-
-Route::get('/api/v1/movie/delete/{movie}', [ApiController::class, 'movieDelete']);

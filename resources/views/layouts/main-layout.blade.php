@@ -12,6 +12,7 @@
     <!-- Styles -->
     @vite('resources/js/app.js')
 
+
     <title>Document</title>
 </head>
 
