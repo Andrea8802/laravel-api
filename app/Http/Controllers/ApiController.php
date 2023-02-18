@@ -12,7 +12,7 @@ class ApiController extends Controller
 {
     public function index()
     {
-        $movies = Movie::all();
+        $movies = Movie::with('genre', 'tags')->get();
         $genres = Genre::all();
         $tags = Tag::all();
 
