@@ -61,4 +61,29 @@ class ApiController extends Controller
             'response' => $movie
         ]);
     }
+
+    public function movieUpdate(Request $request, Movie $movie)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:64',
+            'year' => 'required|digits:4|integer|min:1900|max:' . (date('Y') + 1),
+            'cash_out' => 'integer|min:0|max:2147483647',
+            'genre_id' => 'required|integer',
+            'tags' => 'required|array'
+        ]);
+
+        $movie->update($data);
+
+        $genre = Genre::find($data['genre_id']);
+        $movie->genre()->associate($genre);
+        $movie->save();
+
+        $tags = Tag::find($data['tags']);
+        $movie->tags()->sync($tags);
+
+        return response()->json([
+            'success' => true,
+            'response' => $movie
+        ]);
+    }
 }
