@@ -7,7 +7,7 @@ export default {
   data() {
     return {
       apiUrl: 'http://127.0.0.1:8000/api/v1/',
-      currentId: 0,
+      currentMovie: [],
       movies: '',
       genres: '',
       tags: [],
@@ -16,8 +16,7 @@ export default {
       movieCashOut: '',
       movieGenreId: '',
       movieTags: [],
-      showCreate: false,
-      showEdit: false
+      showForm: false,
     }
   },
   mounted() {
@@ -39,10 +38,10 @@ export default {
 
     loadData() {
       return {
-        'name': this.movieName,
-        'year': this.movieYear,
-        'cash_out': this.movieCashOut,
-        'genre_id': this.movieGenreId,
+        'name': this.currentMovie.name,
+        'year': this.currentMovie.year,
+        'cash_out': this.currentMovie.cash_out,
+        'genre_id': this.currentMovie.genre_id,
         'tags': this.movieTags
       }
     },
@@ -59,13 +58,19 @@ export default {
         })
     },
 
-    createMovie(e) {
+    submitMovie(e) {
       e.preventDefault();
 
       const movie = this.loadData();
-      this.showCreate = false;
+      this.showForm = false;
+      console.log(this.currentMovie);
+      const actualApi = this.apiUrl + (
+        this.currentMovie.id
+          ? 'movie/update/' + this.currentMovie.id
+          : 'movie/store/'
+      );
 
-      axios.post(this.apiUrl + 'movie/store/', movie)
+      axios.post(actualApi, movie)
         .then(res => {
           if (res.data.success) {
             this.updateMovie();
@@ -76,27 +81,6 @@ export default {
           console.error(err);
           this.clearForm();
         })
-
-    },
-
-    editMovie(e) {
-      e.preventDefault();
-
-      const movie = this.loadData();
-      this.showEdit = false;
-
-      axios.post(this.apiUrl + 'movie/update/' + this.currentId, movie)
-        .then(res => {
-          if (res.data.success) {
-            this.updateMovie();
-            this.clearForm();
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          this.clearForm();
-        });
-
 
     },
 
@@ -105,32 +89,19 @@ export default {
         this.movieYear = '',
         this.movieCashOut = '',
         this.movieGenreId = '',
-        this.movieTags = []
+        this.movieTags = [],
+        this.currentMovie = []
     },
 
-    onToggleCreate() {
-      if (!this.showCreate) {
-        this.showCreate = !this.showCreate
-
+    onToggleForm(movie) {
+      if (!this.showForm) {
+        this.showForm = !this.showForm;
+        if (movie.id) {
+          this.currentMovie = movie;
+          this.currentMovie.tags.forEach(tag => this.movieTags.push(tag.id));
+        }
       } else {
-        this.showCreate = !this.showCreate
-        this.clearForm();
-      }
-    },
-
-    onToggleEdit(id) {
-      if (!this.showEdit) {
-        this.currentId = id;
-        this.showEdit = !this.showEdit;
-        id--;
-
-        this.movieName = this.movies[id].name;
-        this.movieYear = this.movies[id].year;
-        this.movieCashOut = this.movies[id].cash_out;
-        this.movieGenreId = this.movies[id].genre_id;
-        this.movies[id].tags.forEach(tag => this.movieTags.push(tag.id));
-      } else {
-        this.showEdit = !this.showEdit;
+        this.showForm = !this.showForm;
         this.clearForm();
       }
     }
@@ -140,22 +111,22 @@ export default {
 </script>
 
 <template>
-  <div v-if="showCreate">
-    <button @click="onToggleCreate">Show List</button>
+  <div v-if="showForm">
+    <button @click="onToggleForm">Show List</button>
     <br>
     <br>
     <form>
       <label for="name">Name</label>
-      <input type="text" name="name" v-model="movieName">
+      <input type="text" name="name" v-model="currentMovie.name">
       <br>
       <label for="year">Year</label>
-      <input type="number" name="year" v-model="movieYear">
+      <input type="number" name="year" v-model="currentMovie.year">
       <br>
       <label for="cash_out">CashOut</label>
-      <input type="number" name="cash_out" v-model="movieCashOut">
+      <input type="number" name="cash_out" v-model="currentMovie.cash_out">
       <br>
       <label for="genre_id">Genre</label>
-      <select name="genre_id" v-model="movieGenreId">
+      <select name="genre_id" v-model="currentMovie.genre_id">
         <option v-for="genre in genres" :value="genre.id">
           {{ genre.name }}
         </option>
@@ -171,47 +142,13 @@ export default {
       </div>
       <br>
 
-      <input type="submit" value="Create Movie" @click="createMovie">
+      <input type="submit" :value="currentMovie === [] ? 'Edit Movie' : 'Create Movie'" @click="submitMovie">
     </form>
   </div>
 
-  <div v-else-if="showEdit">
-    <button @click="onToggleEdit">Show List</button>
-    <br>
-    <br>
-    <form>
-      <label for="name">Name</label>
-      <input type="text" name="name" v-model="movieName">
-      <br>
-      <label for="year">Year</label>
-      <input type="number" name="year" v-model="movieYear">
-      <br>
-      <label for="cash_out">CashOut</label>
-      <input type="number" name="cash_out" v-model="movieCashOut">
-      <br>
-      <label for="genre_id">Genre</label>
-      <select name="genre_id" v-model="movieGenreId">
-        <option v-for="genre in genres" :value="genre.id">
-          {{ genre.name }}
-        </option>
-      </select>
-
-      <br><br>
-      <label>Tags:</label>
-      <br>
-
-      <div v-for="tag in tags" :key="tag.id">
-        <input type="checkbox" :value="tag.id" v-model="movieTags">
-        <label :for="tag.id">{{ tag.name }}</label>
-      </div>
-      <br>
-
-      <input type="submit" value="Edit Movie" @click="editMovie">
-    </form>
-  </div>
 
   <div v-else>
-    <button @click="onToggleCreate">Create Movies</button>
+    <button @click="onToggleForm">Create Movies</button>
     <br>
     <div v-for="movie in movies" :key="movies.id" :info="movie">
       <h2>{{ movie.name }} ({{ movie.year }})</h2>
@@ -224,7 +161,7 @@ export default {
         {{ tag.name }};
       </span>
       <br>
-      <button @click="onToggleEdit(movie.id)">Edit</button>
+      <button @click="onToggleForm(movie)">Edit</button>
       <button @click="deleteMovie(movie.id)">Delete</button>
       <hr>
     </div>
