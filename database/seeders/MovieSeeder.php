@@ -23,7 +23,7 @@ class MovieSeeder extends Seeder
 
             $movie->save();
 
-            $tag = Tag::inRandomOrder()->limit(5)->get();
+            $tag = Tag::inRandomOrder()->limit(rand(1, 3))->get();
             $movie->tags()->attach($tag);
         });
     }

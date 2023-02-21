@@ -1,5 +1,6 @@
 <script>
 import axios from 'axios';
+import { store } from './store'
 
 export default {
   name: 'App',
@@ -7,16 +8,12 @@ export default {
   data() {
     return {
       apiUrl: 'http://127.0.0.1:8000/api/v1/',
-      currentMovie: [],
       movies: '',
       genres: '',
       tags: [],
-      movieName: '',
-      movieYear: '',
-      movieCashOut: '',
-      movieGenreId: '',
       movieTags: [],
       showForm: false,
+      store,
     }
   },
   mounted() {
@@ -38,10 +35,10 @@ export default {
 
     loadData() {
       return {
-        'name': this.currentMovie.name,
-        'year': this.currentMovie.year,
-        'cash_out': this.currentMovie.cash_out,
-        'genre_id': this.currentMovie.genre_id,
+        'name': store.currentMovie.name,
+        'year': store.currentMovie.year,
+        'cash_out': store.currentMovie.cash_out,
+        'genre_id': store.currentMovie.genre_id,
         'tags': this.movieTags
       }
     },
@@ -63,10 +60,10 @@ export default {
 
       const movie = this.loadData();
       this.showForm = false;
-      console.log(this.currentMovie);
+      console.log(store.currentMovie);
       const actualApi = this.apiUrl + (
-        this.currentMovie.id
-          ? 'movie/update/' + this.currentMovie.id
+        store.currentMovie.id
+          ? 'movie/update/' + store.currentMovie.id
           : 'movie/store/'
       );
 
@@ -85,20 +82,17 @@ export default {
     },
 
     clearForm() {
-      this.movieName = '',
-        this.movieYear = '',
-        this.movieCashOut = '',
-        this.movieGenreId = '',
-        this.movieTags = [],
-        this.currentMovie = []
+      this.movieTags = [],
+        store.currentMovie = []
     },
 
     onToggleForm(movie) {
       if (!this.showForm) {
         this.showForm = !this.showForm;
         if (movie.id) {
-          this.currentMovie = movie;
-          this.currentMovie.tags.forEach(tag => this.movieTags.push(tag.id));
+          console.log(store.movie);
+          store.currentMovie = movie;
+          store.currentMovie.tags.forEach(tag => this.movieTags.push(tag.id));
         }
       } else {
         this.showForm = !this.showForm;
@@ -117,16 +111,16 @@ export default {
     <br>
     <form>
       <label for="name">Name</label>
-      <input type="text" name="name" v-model="currentMovie.name">
+      <input type="text" name="name" v-model="store.currentMovie.name">
       <br>
       <label for="year">Year</label>
-      <input type="number" name="year" v-model="currentMovie.year">
+      <input type="number" name="year" v-model="store.currentMovie.year">
       <br>
       <label for="cash_out">CashOut</label>
-      <input type="number" name="cash_out" v-model="currentMovie.cash_out">
+      <input type="number" name="cash_out" v-model="store.currentMovie.cash_out">
       <br>
       <label for="genre_id">Genre</label>
-      <select name="genre_id" v-model="currentMovie.genre_id">
+      <select name="genre_id" v-model="store.currentMovie.genre_id">
         <option v-for="genre in genres" :value="genre.id">
           {{ genre.name }}
         </option>
@@ -142,7 +136,7 @@ export default {
       </div>
       <br>
 
-      <input type="submit" :value="currentMovie === [] ? 'Edit Movie' : 'Create Movie'" @click="submitMovie">
+      <input type="submit" :value="store.currentMovie === [] ? 'Edit Movie' : 'Create Movie'" @click="submitMovie">
     </form>
   </div>
 

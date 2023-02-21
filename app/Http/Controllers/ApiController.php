@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 use App\Models\Movie;
 use App\Models\Genre;
 use App\Models\Tag;
+use App\Mail\NewMovie;
+use App\Mail\EditMovie;
 
 class ApiController extends Controller
 {
@@ -56,6 +59,9 @@ class ApiController extends Controller
         $tags = Tag::find($data['tags']);
         $movie->tags()->attach($tags);
 
+        Mail::to('admin@bestcinema.com')
+            ->send(new NewMovie($movie));
+
         return response()->json([
             'success' => true,
             'response' => $movie
@@ -72,6 +78,9 @@ class ApiController extends Controller
             'tags' => 'required|array'
         ]);
 
+
+        $oldMovie = $movie;
+
         $movie->update($data);
 
         $genre = Genre::find($data['genre_id']);
@@ -80,6 +89,9 @@ class ApiController extends Controller
 
         $tags = Tag::find($data['tags']);
         $movie->tags()->sync($tags);
+
+        Mail::to('admin@bestcinema.com')
+            ->send(new EditMovie($oldMovie, $movie));
 
         return response()->json([
             'success' => true,
