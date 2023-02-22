@@ -17,7 +17,7 @@
     <h1>Movie Edited!</h1>
     <h2>A new "Movie" has been edited.</h2>
 
-    <h3>Before:</h3>
+    <h3>From:</h3>
     <b>Name: </b> {{ $oldMovie->name }} ({{ $oldMovie->year }})
     <br>
     <b>CashOut: </b> {{ $oldMovie->cash_out }}
@@ -30,7 +30,7 @@
     @endforeach
 
 
-    <h3>After:</h3>
+    <h3>To:</h3>
     <b>Name: </b> {{ $newMovie->name }} ({{ $newMovie->year }})
     <br>
     <b>CashOut: </b> {{ $newMovie->cash_out }}

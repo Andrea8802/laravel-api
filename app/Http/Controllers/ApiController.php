@@ -78,8 +78,7 @@ class ApiController extends Controller
             'tags' => 'required|array'
         ]);
 
-
-        $oldMovie = $movie;
+        $oldMovie = clone $movie;
 
         $movie->update($data);
 
